@@ -1,49 +1,93 @@
-![](http://www.alsoenergy.com/wp/wp-content/uploads/FullColor_BlackTag-e1413573042293.png)
+### About
 
-# Coding Challenge
-- Clone this repo to your local machine
-- Use it to create a new repo on GitHub under your own account (please don't use GitHub fork to accomplish this)
-- Complete the challenges described below. For the javascript challenges, the main invocation of the solution should be in its place in main.js, but you may add other script files if desired.
-- Optionally, complete the Bonus challenge
-- Cleanup commit history to have 1 commit per challenge, in order, on the master branch.
-- Send us an email with a link to your repo
+This is the technical challenge for AlsoEnergy. It includes three parts, detailed below.
 
-___
+### Technology Used
+
+* JavaScript
+* HTML/CSS
+* Canvas
+
 ## Challenge 1. HTML and CSS
-Using index.html and style.css files, make a page that has a header bar, body with split content (left column menu, right column main content) and footer. Make the split content stack vertically for screens smaller than 600px wide, with content going above the menu. The header and footer background color should be different from that of the content. Colors, Sizing and other styling details are up to you (don't worry about style too much, you don't need to be a designer, just do something reasonable).
 
-* Header: Bar along top. Contains Left justified text "AlsoEnergy Coding Challenge" and also energy logo found in images\also logo.png
-* Menu: column on left side (or below content on small screens)
-* Content: rest of area to the right of menu (or full width area below the header for small screens)
-* Footer: Bar along bottom
+Using CSS grid, I implemented the following (screenshots!):
 
-___
-## Challenge 2. Javascript Basics
-In main.js create a function that takes an array argument. The array will contain objects of the form 
-{first: "Amanda", last: "Byron", group: "Sales"}.
-The function should return an object that organizes each entry by group, and combines the name, making sure to put the last name first if 'nameOrder' is "reverse". The example below shows a possible input to the function, but the function should be able to handle any alpha-numeric group names.
+### Fullsize version
 
+![image](https://s3-us-west-1.amazonaws.com/kc-ensemble/Screen+Shot+2018-11-30+at+10.46.30+AM.png)
 
-The function should take the array:
-```javascript
-[
-    {first: "Amanda", last: "Byron", group: "Sales"},
-    {first: "Ye", last: "Xia", group: "Receiving", nameOrder: "reverse"},
-    {first: "Miltiades", last: "Crescens", group: "Sales"},
-]
+### Under 600px width
+
+![image](https://s3-us-west-1.amazonaws.com/kc-ensemble/Screen+Shot+2018-11-30+at+10.48.16+AM.png)
+
+## Challenge 2. JavaScript Basics
+
+In `main.js` you'll find the following code:
+
 ```
-And yield a return object of:
-```javascript
-{ 
-    receiving: [{name: "Xia Ye"}]
-    sales: [{name: "Amanda Byron"}, {name: "Miltiades Crescens"}],       
+validateName = (employee) => {
+  if (employee.nameOrder == "reverse") return {name: employee.last + " " + employee.first};
+  return {name: employee.first + " " + employee.last};
+}
+
+sortGroupAlphabetically = (employeeGroups) => {
+  return Object.keys(employeeGroups)
+        .sort()
+        .reduce(function(acc, key) {
+          acc[key] = employeeGroups[key];
+          return acc;
+        }, {});
+}
+
+orderByGroup = (employees) => {
+  const employeeGroups = {};
+  employees.forEach(function(employee){
+    const group = employee.group.toLowerCase();
+    employeeGroups[group] === undefined ?
+      employeeGroups[group] = [validateName(employee)] :
+      employeeGroups[group].push(validateName(employee))
+  });
+
+  return sortGroupAlphabetically(employeeGroups);
+}
+
+```
+
+which accepts the following format:
+
+```
+[
+  {first: "Amanda", last: "Byron", group: "Sales"},
+  {first: "Ye", last: "Xia", group: "Receiving", nameOrder: "reverse"},
+  {first: "Miltiades", last: "Crescens", group: "Sales"},
+];
+
+```
+
+and outputs the following format:
+
+```
+{
+  receiving: [{name: "Xia Ye"}]
+  sales: [{name: "Amanda Byron"}, {name: "Miltiades Crescens"}],       
 }
 ```
-___
-## Bonus. Rabbit Genealogy 
- This challenge is not required, we realize it may be too time consuming to fit into one's schedule.
- 
- For this challenge, you may use canvas, svg or a different method to draw the required shapes. In a field taking up the entire content area, draw 3 'rabbits' in random locations (the rabbit can be represented by a rectangle). These 3 are the 'first generation' of rabbits.  When the Generate button is clicked, each rabbit from the latest generation will spawn between 0 and 5 offspring, the offspring should be 2/3rds the height and width of their parents. They should be located at a random angle from their parent, but with a distribution of distance such that it is more likely that it is closer to its parent than farther. All rabbits must be entirely within the borders of the field, and not colliding with any other rabbits.
 
-When the user clicks on the field, if the cursor is on a rabbit, draw that rabbit with a white border.  Change the fill color of the selected rabbit's descendents to yellow, and parents to blue.
-___
+I've also included some `console.log`s so it can be verified in action!
+
+## Challenge 3. Rabbit Genealogy
+
+For this challenge I changed the main portion of the `index.html` page to include a rabbit genealogy visualization. Using a canvas, three random rectangles are placed on page load (these rectangles represent rabbits). A new button has been added to the menu on the left hand side titled "new rabbit generation". When a user clicks on "new rabbit generation", the last generation of rabbits will have 0-5 rabbit babies which will be placed randomly (but designed to appear within a certain range of their parents). No rabbits overlap.
+
+When a user clicks on a rabbit its children will be colored yellow, its parent will be colored blue, and it will generate a white border around itself (border width is based on width and height of rabbit).
+
+Here's a screenshot:
+
+![image](https://s3-us-west-1.amazonaws.com/kc-ensemble/Screen+Shot+2018-12-02+at+12.27.05+PM.png)
+
+A couple of potential future improvements:
+
+* Currently you can click on "new rabbit generation" to your heart's content. If your heart isn't content with 5 or 6 generations though, the web page is going to grind to a halt as rabbits overpopulate the canvas and can't find any open space. Close the page and revisit it!
+* Clicking on a rabbit changes the color of its parent and children, but then if you select a child of that rabbit and click on it, it removes the parents border and changes its color. A way to blend colors might be a good addition. Or potentially all currently colored rabbits could reset after clicking on a rabbit.
+* Sizing the canvas appropriately using grid is a bit of a struggle. I've yet to find an elegant implementation.
+* The challenge didn't specify to use Node, but in future iterations the project would benefit from using it, if for nothing else - for code organization.

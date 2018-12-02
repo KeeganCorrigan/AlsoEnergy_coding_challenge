@@ -44,6 +44,8 @@ header {
   grid-template-areas:
   'nav main main main main main main';
   padding-bottom: 20px;
+  width: 100%;
+  height: 100%;
 }
 
 .main-content-info-container {
@@ -79,9 +81,27 @@ a:hover {
   transition: 0.3s;
 }
 
+button {
+  color: #fff !important;
+  border-radius: 5px;
+  text-transform: uppercase;
+  background: #ed3330;
+  border: none;
+  display: inline-block;
+  padding: 20px;
+  margin: 10px;
+}
+
+button:hover {
+  background: #434343;
+  transition: all 0.4s ease 0s;
+}
+
 main {
   grid-area: main;
-  margin-right: 5%;
+  margin: 20px;
+  height: 750px;
+  width: 90vh;
 }
 
 footer {
@@ -107,17 +127,6 @@ footer h1, footer p {
     grid-template-areas:
     'main'
     'nav';
-  }
-
-  .main-content-info-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .info-display {
-    width: 60%;
   }
 
   nav {
